@@ -8,46 +8,39 @@ if exists("b:current_syntax")
 endif
 
 " Strings
-syn match	Path "\(\.\|\~\)\/.*"
-syn match	Symbol " = " skipwhite contained nextgroup=Value
-syn match	Str "[a-z]\+$" contained
-syn match	Num "\d\+\(\.\d\+\)\?" contained
-syn match	Num "[+-]\d\+\(\.\d\+\)\?" contained
-syn match	ShellVar "\$\w\+" contained
-syn keyword	Logical on off true false no yes contained
-syn cluster Value contains=Str,Num,Logical,ShellVar,Path,Windowrules
+syn match	Path "\(\.\|\~\)\/.*" display
+syn match	Symbol "=" skipwhite display nextgroup=Value
+syn match	Str "[a-zA-Z _ .-]\+$" contained display
+syn match	Num "\d\+\(\.\d\+\)\?" contained display
+syn match	Num "[+-]\d\+\(\.\d\+\)\?" contained display
+syn match	ShellVar "\$\w\+" contained display
+syn keyword	Logical on off true false no yes contained display
+"syn cluster Value contains=Str,Num,Logical,ShellVar,Path,Windowrules
 "syn region  HyprSimpleString keepend start='[^ \t]' end='$\|#' contained contains=HyprVar,HyprComment
 "syn match   HyprQuotedString '"[^"]\+"' contained
 "syn cluster HyprString contains=HyprSimpleString,HyprQuotedString
 
-syn region OptBlock start="{" end="}" fold transparent contains=Option,Block,HyprComment,
+" Settings
 syn keyword Block input general animations decoration gestures misc dwindle master
+syn region OptBlock start="{" end="}" fold transparent display contains=HyprVar,Value,OptBlock,Num,Str,HyprComment,Disp
+syn match HyprVar '\s[a-z _ .]\+ ' skipwhite contained display nextgroup=Symbol
+syn region Value start="=" end="$\|," transparent display contains=Str,Num,Logical,ShellVar,Path,HyprComment,Disp,Dispatchers
+syn match Disp '[a-zA-Z _.]\+,' contained display
 
-syn region Option start='\t\w\+' end="$" transparent contained contains=HyprVar,HyprComment,Symbol,Num,Str,ShellVar,Logical
-syn match HyprVar '[a-z _ .]\+ ' skipwhite contained nextgroup=Symbol
-
-" Key modifiers
-"syn region Bind start='^bind' end='$\|#' transparent contains=HyprKeyModifier,HyprConfigCommand,Dispatchers,KeyBind,HyprComment
-"syn keyword Dispatchers exec pass killactive closewindow workspace movetoworkspace movetoworkspacesilent togglefloating fullscreen dpms pseudo pin movefocus movewindow resizeactive moveactive resizewindowpixel movewindowpixel cyclenext swapnext focuswindow focusmonitor splitratio toggleopaque movecursortocorner workspaceopt exit forcerendererreload movecurrentworkspacetomonitor moveworkspacetomonitor swapactiveworkspaces bringactivetotop togglespecialworkspace layoutmsg resizewindow
-"syn keyword HyprKeyModifier SUPER SHIFT CTRL ALT Mod1 Mod2 Mod3 Mod4 Mod5 Mode_switch
-
-
-syn region Rule keepend start='^windowrule' end='$' transparent contains=Windowrules,Str,Num,Symbol,Value
-syn match Windowrules '.*' skipwhite contained nextgroup=Value
-"syn keyword Windowrules float tile fullscreen move noblur nofocus noborder noshadow forceinput windowdance pin noanim rounding size nextgroup=Value
-
-" Config commands
-"syn match HyprConfigCommand '^\w\+' nextgroup=Symbol
-"syn match HyprConfigCommand '[a-z _ .]\+ ' skipwhite nextgroup=Symbol
-syn keyword HyprConfigCommand bind bindm monitor source windowrule nextgroup=Symbol
-
+" Commands
+syn region Command start='^\w\+ =' end='$' skipwhite transparent contains=HyprKeyModifier,HyprConfigCommand,Dispatchers,HyprComment,ShellVar,Str
+syn keyword Dispatchers exec pass killactive closewindow workspace movetoworkspace movetoworkspacesilent togglefloating fullscreen dpms pseudo pin movefocus movewindow resizeactive moveactive resizewindowpixel movewindowpixel cyclenext swapnext focuswindow focusmonitor splitratio toggleopaque movecursortocorner workspaceopt exit forcerendererreload movecurrentworkspacetomonitor moveworkspacetomonitor swapactiveworkspaces bringactivetotop togglespecialworkspace layoutmsg resizewindow togglesplit contained display
+syn keyword HyprKeyModifier SUPER SHIFT CTRL ALT Mod1 Mod2 Mod3 Mod4 Mod5 Mode_switch
+syn keyword HyprConfigCommand bind bindm monitor source windowrule nextgroup=Symbol contained
 
 " Comments
 syn keyword HyprTodo contained TODO FIXME XXX NOTE
 syn match   HyprComment "\(#\|\/\/\).*$" contains=HyprTodo
 
+
 highlight link Dispatchers		        Special
 highlight link Windowrules		        Special
+highlight link Disp				        Special
 
 highlight link Num						Constant
 highlight link NumRule					Constant
